@@ -20,6 +20,7 @@
     "firebase-admin": "^11.8.0",
     "google-auth-library": "^8.8.0",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "mongodb": "4.1",
     "mongoose": "^7.2.0"
   },

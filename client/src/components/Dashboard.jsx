@@ -2,26 +2,35 @@ import React, { useState, useEffect } from "react";
 import Confetti from "react-confetti";
 import axios from "axios";
 import { useAuth } from "../auth/AuthContext";
-export default function App() {
-  const [streak, setStreak] = useState(0);
+import moment from "moment";
+export default function Dashboard() {
+  const [valuesStreak, setValuesStreak] = useState({
+    streak: 0,
+    coins: 0,
+    lastClaimedDate: null,
+  });
+
   const { logout } = useAuth();
   const token = sessionStorage.getItem("token");
   const [showConfetti, setShowConfetti] = useState(false);
-  const [totalCoins, setTotalCoins] = useState(0);
+
   const [showStreakInfo, setShowStreakInfo] = useState(true);
 
   const daysOf5 = Array.from({ length: 5 }, (_, index) => index);
 
+  const today = moment(valuesStreak.lastClaimedDate).format("YYYY-MM-DD");
+  // Check if the streak has already been claimed today
+
   const claimStreak = async () => {
-    let newStreak = streak + 1;
-    let newTotalCoins = totalCoins + 1;
+    let newStreak = valuesStreak.streak + 1;
+    let newTotalCoins = valuesStreak.coins + 1;
 
     if (newStreak % 5 === 0) {
       newTotalCoins += 5; // Bonus coins every 5 days
     }
 
-    await axios
-      .post(
+    try {
+      await axios.post(
         "http://localhost:3000/api/users/updateStreakAndCoins",
         {
           streak: newStreak,
@@ -32,34 +41,40 @@ export default function App() {
             Authorization: token,
           },
         }
-      )
-      .then((response) => {
-        setStreak(newStreak);
-        setTotalCoins(newTotalCoins);
-        setShowConfetti(true);
-        setShowStreakInfo(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      );
+      setValuesStreak((items) => ({
+        ...items,
+        streak: newStreak,
+        coins: newTotalCoins,
+      }));
+      setShowConfetti(true);
+      setShowStreakInfo(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     const fetch = async () => {
-      await axios
-        .get("http://localhost:3000/api/users", {
+      try {
+        const response = await axios.get("http://localhost:3000/api/users", {
           headers: {
             Authorization: token,
           },
-        })
-        .then((response) => {
-          const { data } = response;
-          setStreak(data.streak);
-          setTotalCoins(data.coins);
         });
+        const { data } = response;
+
+        if (today === data.lastClaimedDate) {
+          setShowConfetti(true);
+          setShowStreakInfo(false);
+        }
+        setValuesStreak(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetch();
-  }, [token]);
+  }, [token, today]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -77,17 +92,17 @@ export default function App() {
       {!showStreakInfo && (
         <div className="streak">
           <div className="streak-info m-2 ">
-            <div className="streak-number">{streak}</div>
+            <div className="streak-number">{valuesStreak.streak}</div>
             <div className="streak-label">Days Streak</div>
           </div>
-          <p className="mb-4 text-center">Total Coins: {totalCoins}</p>
+          <p className="mb-4 text-center">Total Coins: {valuesStreak.coins}</p>
 
           <div className="flex mb-2">
             {daysOf5.map((day, index) => (
               <div
                 key={day}
                 className={`w-8 h-8 rounded-full mx-1 ${
-                  index < streak
+                  index < valuesStreak.streak
                     ? "claimed-day animate-streak"
                     : "unclaimed-day"
                 }`}
