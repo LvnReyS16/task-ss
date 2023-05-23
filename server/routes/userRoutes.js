@@ -7,7 +7,6 @@ const { authenticate } = require("../utils/auth");
 
 const router = express.Router();
 
-// Protected route
 router.get("/", authenticate, getUser);
 router.post("/updateStreakAndCoins", authenticate, updateStreakAndCoins);
 
