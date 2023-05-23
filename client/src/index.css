@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* styles.css */
+
+/* Example styles for the streak information */
+.streak-info {
+  text-align: center;
+}
+
+.streak-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #3b82f6;
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.streak-label {
+  font-size: 18px;
+  color: #888888;
+  margin-top: 10px;
+}
+
+/* Example styles for the claimed and unclaimed circles */
+.claimed-day {
+  background-color: #10b981;
+}
+
+.unclaimed-day {
+  background-color: #d1d5db;
+}
+
+/* Example styles for the animation */
+.animate-streak {
+  animation: pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
