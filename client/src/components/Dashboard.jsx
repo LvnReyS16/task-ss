@@ -18,7 +18,7 @@ export default function Dashboard() {
 
   const daysOf5 = Array.from({ length: 5 }, (_, index) => index);
 
-  const today = moment(valuesStreak.lastClaimedDate).format("YYYY-MM-DD");
+  const today = moment(new Date()).format("YYYY-MM-DD");
   // Check if the streak has already been claimed today
 
   const claimStreak = async () => {
@@ -64,6 +64,7 @@ export default function Dashboard() {
         });
         const { data } = response;
 
+        console.log(today);
         if (today === data.lastClaimedDate) {
           setShowConfetti(true);
           setShowStreakInfo(false);

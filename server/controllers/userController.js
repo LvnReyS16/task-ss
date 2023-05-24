@@ -10,7 +10,7 @@ exports.getUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const formattedDate = moment(user.formattedDate).format("YYYY-MM-DD");
+    const formattedDate = moment(user.lastClaimedDate).format("YYYY-MM-DD");
 
     res.status(200).json({
       lastClaimedDate: formattedDate,
