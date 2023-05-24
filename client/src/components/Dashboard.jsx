@@ -64,7 +64,6 @@ export default function Dashboard() {
         });
         const { data } = response;
 
-        console.log(today);
         if (today === data.lastClaimedDate) {
           setShowConfetti(true);
           setShowStreakInfo(false);
